@@ -1,18 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\PresensiController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('presensi.index');
+});
+
+Route::prefix('presensi')->name('presensi.')->group(function () {
+    Route::get('/', [PresensiController::class, 'index'])->name('index');
+    Route::get('/create', [PresensiController::class, 'create'])->name('create');
+    Route::post('/', [PresensiController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [PresensiController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PresensiController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PresensiController::class, 'destroy'])->name('destroy');
 });
