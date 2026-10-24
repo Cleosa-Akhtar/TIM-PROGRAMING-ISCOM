@@ -19,60 +19,94 @@
                 <h5 class="mb-0">Formulir Kehadiran Mahasiswa</h5>
             </div>
             <div class="card-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <form action="{{ route('presensi.store') }}" method="POST">
                     @csrf
+                    
                     <div class="mb-3">
                         <label>NPM</label>
-                        <input type="text" name="npm" class="form-control" required>
+                        <!-- value="{{ old('npm') }}": Menahan data yang sudah diketik agar tidak hilang saat halaman dimuat ulang akibat eror -->
+                        <!-- @error('npm') is-invalid @enderror: Memberikan garis batas warna merah pada kotak input jika validasi gagal -->
+                        <input type="text" name="npm" class="form-control @error('npm') is-invalid @enderror" value="{{ old('npm') }}" required>
+                        
+                        <!-- Menampilkan pesan eror spesifik berwarna merah khusus untuk kolom NPM -->
+                        @error('npm')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="mb-3">
                         <label>Nama Lengkap</label>
-                        <input type="text" name="nama" class="form-control" required>
+                        <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama') }}" required>
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="mb-3">
                         <label>Program Studi</label>
-                        <input type="text" name="program_studi" class="form-control" required>
+                        <input type="text" name="program_studi" class="form-control @error('program_studi') is-invalid @enderror" value="{{ old('program_studi') }}" required>
+                        @error('program_studi')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="mb-3">
                         <label>Kelas</label>
-                        <input type="text" name="kelas" class="form-control" required>
+                        <input type="text" name="kelas" class="form-control @error('kelas') is-invalid @enderror" value="{{ old('kelas') }}" required>
+                        @error('kelas')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="mb-3">
                         <label>Mata Kuliah</label>
-                        <input type="text" name="mata_kuliah" class="form-control" required>
+                        <input type="text" name="mata_kuliah" class="form-control @error('mata_kuliah') is-invalid @enderror" value="{{ old('mata_kuliah') }}" required>
+                        @error('mata_kuliah')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label>Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control" required>
+                            <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal') }}" required>
+                            @error('tanggal')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
+                        
                         <div class="col-md-6">
                             <label>Waktu Hadir</label>
-                            <input type="time" name="waktu_hadir" class="form-control" required>
+                            <input type="time" name="waktu_hadir" class="form-control @error('waktu_hadir') is-invalid @enderror" value="{{ old('waktu_hadir') }}" required>
+                            @error('waktu_hadir')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
+                    
                     <div class="mb-3">
                         <label>Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Izin">Izin</option>
-                            <option value="Sakit">Sakit</option>
-                            <option value="Alpa">Alpa</option>
+                        <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                            <!-- ternary operator (old('status') == 'nilai' ? 'selected' : '') menjaga agar pilihan dropdown tidak kembali ke atas saat eror -->
+                            <option value="hadir" {{ old('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
+                            <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
+                            <option value="sakit" {{ old('status') == 'sakit' ? 'selected' : '' }}>Sakit</option>
+                            <option value="alpa" {{ old('status') == 'alpa' ? 'selected' : '' }}>Alpa</option>
                         </select>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <div class="mb-4">
                         <label>Keterangan (Opsional)</label>
-                        <textarea name="keterangan" class="form-control" rows="3"></textarea>
+                        <!-- Untuk elemen textarea, pemanggilan fungsi old() diletakkan di antara tag pembuka dan penutup, bukan di dalam atribut value -->
+                        <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" rows="3">{{ old('keterangan') }}</textarea>
+                        @error('keterangan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
+                    
                     <button type="submit" class="btn btn-primary">Simpan Presensi</button>
                     <a href="{{ route('presensi.index') }}" class="btn btn-secondary">Batal</a>
                 </form>

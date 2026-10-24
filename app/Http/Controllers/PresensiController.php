@@ -7,10 +7,24 @@ use Illuminate\Http\Request;
 
 class PresensiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $presensis = Presensi::orderBy('id', 'asc')->get();
-        return view('presensi.index', compact('presensis'));
+        $search = $request->input('search');
+
+        // Menampilkan data fitur pencarian dan paginasi
+        $presensis = Presensi::when($search, function ($query, $search) {
+            return $query->where('nama', 'like', "%{$search}%")
+                         ->orWhere('npm', 'like', "%{$search}%");
+        })->orderBy('id', 'asc')->paginate(5);
+
+        // Menghitung total status
+        $hadir = Presensi::where('status', 'hadir')->count();
+        $izin = Presensi::where('status', 'izin')->count();
+        $sakit = Presensi::where('status', 'sakit')->count();
+        $alpa = Presensi::where('status', 'alpa')->count();
+
+        // Mengirimkan data dan jumlah status ke tampilan
+        return view('presensi.index', compact('presensis', 'hadir', 'izin', 'sakit', 'alpa'));
     }
 
     public function create()

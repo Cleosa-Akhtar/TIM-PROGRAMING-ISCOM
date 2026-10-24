@@ -20,6 +20,51 @@
                 <a href="{{ route('presensi.create') }}" class="btn btn-primary btn-sm">Tambah Presensi</a>
             </div>
             <div class="card-body">
+                
+                <!-- BLOK KOTAK STATUS-->
+                <div class="row mb-4 text-center">
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Hadir</h5>
+                                <h3>{{ $hadir }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Izin</h5>
+                                <h3>{{ $izin }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Sakit</h5>
+                                <h3>{{ $sakit }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Alpa</h5>
+                                <h3>{{ $alpa }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOK FORMULIR PENCARIAN -->
+                <form action="{{ route('presensi.index') }}" method="GET" class="mb-3 w-50">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NPM..." value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">Cari</button>
+                    </div>
+                </form>
+
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
@@ -36,7 +81,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($presensis as $p)
+                        @forelse($presensis as $p)
                         <tr>
                             <td>{{ $p->npm }}</td>
                             <td>{{ $p->nama }}</td>
@@ -50,15 +95,27 @@
                             <td>
                                 <a href="{{ route('presensi.edit', $p->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                 <form action="{{ route('presensi.destroy', $p->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</button>
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</button>
                                 </form>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="10" class="text-center text-danger py-4">
+                            <strong>Peringatan:</strong> Data mahasiswa "{{ request('search') }}" tidak ditemukan.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
+                
+                <!-- BLOK NAVIGASI PAGINASI -->
+                <div class="mt-4">
+                    {{ $presensis->appends(['search' => request('search')])->links() }}
+                </div>
+
             </div>
         </div>
     </div>
